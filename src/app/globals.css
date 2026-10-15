@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+/* Design tokens. Light by default, dark follows the OS. Text pairs are checked for 4.5:1 (body) and 3:1 (muted). */
+:root {
+  --bg: #fafafc;
+  --surface: #ffffff;
+  --surface-2: #f1f1f6;
+  --line: #e2e2ea;
+  --fg: #17171c;
+  --muted: #5b5c6e;
+  --brand: #7c3aed;
+  --brand-hover: #6d28d9;
+  --brand-soft: #f1eaff;
+  --brand-text: #6d28d9;
+  --ok: #15803d;
+  --danger: #dc2626;
+  --notice-bg: #fff7e6;
+  --notice-fg: #6b3f00;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b0b10;
+    --surface: #14141b;
+    --surface-2: #1d1d27;
+    --line: #2b2b38;
+    --fg: #ececf2;
+    --muted: #a3a4b8;
+    --brand: #7c3aed;
+    --brand-hover: #8b5cf6;
+    --brand-soft: #231a3d;
+    --brand-text: #b79cff;
+    --ok: #4ade80;
+    --danger: #f87171;
+    --notice-bg: #2a1d08;
+    --notice-fg: #f3d9a4;
+  }
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-text: var(--brand-text);
+  --color-ok: var(--ok);
+  --color-danger: var(--danger);
+  --color-notice-bg: var(--notice-bg);
+  --color-notice-fg: var(--notice-fg);
+  --font-sans: var(--font-geist-sans), var(--font-noto-myanmar), system-ui, sans-serif;
+}
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+}
+
+/* Burmese stacks tall; give it room so lines never touch. */
+:lang(my) {
+  line-height: 1.85;
+}
+
+/* Tailwind 4 resets buttons to the default cursor; desktop users expect a pointer. */
+button:not(:disabled),
+select:not(:disabled),
+summary {
+  cursor: pointer;
+}
+
+/* Visible keyboard focus everywhere. */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+}
+
+/* Ambient glow behind every page (the "AI" feel). Fixed, non-interactive, behind content. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(60rem 36rem at 8% -8%, rgb(124 58 237 / 0.14), transparent 60%),
+    radial-gradient(52rem 32rem at 100% 0%, rgb(56 189 248 / 0.12), transparent 60%),
+    radial-gradient(48rem 30rem at 50% 115%, rgb(217 70 239 / 0.08), transparent 60%);
+}
+@media (prefers-color-scheme: dark) {
+  body::before {
+    background:
+      radial-gradient(60rem 36rem at 8% -8%, rgb(124 58 237 / 0.26), transparent 60%),
+      radial-gradient(52rem 32rem at 100% 0%, rgb(56 189 248 / 0.14), transparent 60%),
+      radial-gradient(48rem 30rem at 50% 115%, rgb(217 70 239 / 0.14), transparent 60%);
+  }
+}
+
+@layer components {
+  .glass {
+    @apply border-line/70 bg-surface/70 backdrop-blur-xl;
+  }
+  .text-gradient {
+    @apply bg-gradient-to-r from-violet-500 via-fuchsia-500 to-indigo-500 bg-clip-text text-transparent;
+  }
+  .msg-in {
+    animation: msg-in 220ms ease-out both;
+  }
+  .btn {
+    @apply inline-flex min-h-10 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-line bg-surface px-4 py-2 text-sm font-medium text-fg transition-colors duration-150 hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-transparent bg-gradient-to-br from-violet-600 to-indigo-600 px-4 py-2.5 text-base font-medium text-white shadow-sm shadow-violet-600/20 transition duration-150 hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .field {
+    @apply w-full rounded-xl border border-line bg-surface px-3.5 py-3 text-base text-fg transition-colors duration-150 placeholder:text-muted hover:border-muted focus:border-brand;
+  }
+  .card {
+    @apply rounded-2xl border border-line bg-surface;
+  }
+  .icon-btn {
+    @apply inline-flex size-11 items-center justify-center rounded-xl text-muted transition-colors duration-150 hover:bg-surface-2 hover:text-fg md:size-10;
+  }
+}
+
+@keyframes msg-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes typing-dot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .msg-in {
+    animation: none;
+  }
+  .typing-dot {
+    animation: none !important;
+    opacity: 0.6 !important;
+  }
+}
