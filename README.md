@@ -104,3 +104,7 @@ $C run --rm tools npx tsx scripts/seed.ts admin "Admin" "a-temporary-password"
 
 - AI cost and token counts are visible only to the developer account listed in `DEVELOPER_USERNAMES`.
 - The database port is bound to `127.0.0.1` in development and not published at all in production.
+
+## License
+
+[MIT](LICENSE)
