@@ -1,0 +1,25 @@
+# Use when the server already runs a Traefik reverse proxy on ports 80/443 (e.g. an n8n stack),
+# instead of this project's own Caddy:
+#   docker compose -f docker-compose.prod.yml -f docker-compose.traefik.yml --env-file .env.production up -d --build
+# Set TRAEFIK_NETWORK (the Docker network Traefik is attached to) and TRAEFIK_CERTRESOLVER in .env.production.
+services:
+  caddy:
+    profiles: ["caddy"] # not started: Traefik does the HTTPS
+
+  web:
+    networks:
+      - default
+      - proxy
+    labels:
+      traefik.enable: "true"
+      traefik.docker.network: ${TRAEFIK_NETWORK:?set TRAEFIK_NETWORK in .env.production}
+      traefik.http.routers.htake.rule: Host(`${DOMAIN}`)
+      traefik.http.routers.htake.entrypoints: websecure
+      traefik.http.routers.htake.tls: "true"
+      traefik.http.routers.htake.tls.certresolver: ${TRAEFIK_CERTRESOLVER:?set TRAEFIK_CERTRESOLVER in .env.production}
+      traefik.http.services.htake.loadbalancer.server.port: "3000"
+
+networks:
+  proxy:
+    name: ${TRAEFIK_NETWORK}
+    external: true
