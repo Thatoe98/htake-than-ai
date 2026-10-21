@@ -5,6 +5,9 @@ import { openai } from "@ai-sdk/openai";
 export const MODEL_IDS = {
   chat: process.env.OPENAI_MODEL_CHAT || "gpt-6-luna",
   briefing: process.env.OPENAI_MODEL_BRIEFING || process.env.OPENAI_MODEL_CHAT || "gpt-6-luna",
+  // Speech to text for voice messages. gpt-6-luna cannot transcribe; gpt-transcribe is the current model
+  // (whisper-1 and gpt-4o-transcribe shut down 2027-02-26 and were worse for Burmese in our test).
+  transcribe: process.env.OPENAI_MODEL_TRANSCRIBE || "gpt-transcribe",
 } as const;
 
 export const chatModel = () => openai(MODEL_IDS.chat);

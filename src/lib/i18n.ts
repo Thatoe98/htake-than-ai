@@ -14,6 +14,26 @@ const dict = {
   placeholder: { en: "Message the assistant…", my: "အကူအညီပေးသူသို့ စာရိုက်ပါ…" },
   send: { en: "Send", my: "ပို့မည်" },
   stop: { en: "Stop", my: "ရပ်မည်" },
+  // Voice messages: tap the microphone, speak, tap again; the words are sent as a normal message.
+  micStart: { en: "Speak a message", my: "အသံဖြင့် ပြောမည်" },
+  micStop: { en: "Done speaking, send", my: "ပြောပြီးပါပြီ၊ ပို့မည်" },
+  micCancel: { en: "Cancel recording", my: "အသံသွင်းခြင်း ပယ်ဖျက်မည်" },
+  voiceRecording: { en: "Listening…", my: "နားထောင်နေသည်…" },
+  voiceTranscribing: { en: "Understanding your voice…", my: "အသံကို နားလည်အောင် လုပ်နေသည်…" },
+  voiceDenied: {
+    en: "The microphone is blocked. Allow it for this site in your browser settings, then try again.",
+    my: "မိုက်ခရိုဖုန်း အသုံးပြုခွင့် မရပါ။ ဘရောက်ဇာ ဆက်တင်တွင် ဤဝက်ဘ်ဆိုဒ်အတွက် ခွင့်ပြုပြီး ထပ်ကြိုးစားပါ။",
+  },
+  voiceUnsupported: {
+    en: "Voice messages do not work in this browser. Please type instead.",
+    my: "ဤဘရောက်ဇာတွင် အသံဖြင့် ပို့ခြင်း မရပါ။ စာရိုက်၍ ပို့ပါ။",
+  },
+  voiceTooShort: { en: "That was too short. Tap the microphone and try again.", my: "အသံတိုလွန်းပါသည်။ ထပ်ပြောပါ။" },
+  voiceNoSpeech: { en: "I could not hear any speech. Please try again.", my: "စကားသံ မကြားရပါ။ ထပ်ပြောပါ။" },
+  voiceFailed: {
+    en: "I could not understand the recording. Please try again or type.",
+    my: "အသံကို နားမလည်နိုင်ပါ။ ထပ်ကြိုးစားပါ၊ သို့မဟုတ် စာရိုက်ပါ။",
+  },
   emptyState: {
     en: "Tell me what you worked on, ask for help, or file your end-of-day report.",
     my: "ယနေ့ လုပ်ခဲ့သည့်အလုပ်ကို ပြောပြပါ၊ အကူအညီတောင်းပါ၊ သို့မဟုတ် နေ့စဉ်အစီရင်ခံစာ တင်ပါ။",

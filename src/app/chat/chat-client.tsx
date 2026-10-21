@@ -11,6 +11,7 @@ import {
   FileTextIcon,
   ListTodoIcon,
   LogoMark,
+  MicIcon,
   PencilIcon,
   SparklesIcon,
   StopIcon,
@@ -18,6 +19,7 @@ import {
 } from "@/components/icons";
 import { summarizeToolCall, isWriteTool } from "@/lib/ai/tool-summary";
 import { type Locale, type MessageKey, t } from "@/lib/i18n";
+import { useVoiceInput } from "./use-voice-input";
 
 type ToolPart = {
   type: string;
@@ -142,6 +144,13 @@ export function ChatClient({
     sendMessage({ text: trimmed });
     setInput("");
   }
+
+  // A spoken message is sent as soon as it is understood, like a typed one. Nothing is saved without the
+  // approval card, so a misheard word can still be corrected before anything is stored.
+  const voice = useVoiceInput(send);
+  const voiceBusy = voice.state !== "idle";
+  const voiceError = voice.errorText ?? (voice.errorKey ? t(locale, voice.errorKey) : null);
+  const clock = `${Math.floor(voice.seconds / 60)}:${String(voice.seconds % 60).padStart(2, "0")}`;
 
   const renderTool = (p: ToolPart) => {
     const name = toolName(p);
@@ -316,6 +325,11 @@ export function ChatClient({
               {serverMessage(error) ?? t(locale, "error")}
             </p>
           )}
+          {voiceError && (
+            <p role="alert" className="rounded-xl bg-danger/10 px-4 py-3 text-sm text-danger">
+              {voiceError}
+            </p>
+          )}
           <div ref={bottomRef} />
         </div>
       </main>
@@ -328,10 +342,27 @@ export function ChatClient({
           }}
           className="mx-auto flex w-full max-w-3xl items-end gap-2 glass rounded-3xl border p-2 shadow-lg shadow-violet-500/5 transition duration-150 focus-within:border-brand focus-within:shadow-violet-500/20"
         >
+          {voiceBusy && (
+            <div role="status" className="flex min-h-11 flex-1 items-center gap-3 px-3 text-base">
+              {voice.state === "recording" ? (
+                <>
+                  <span aria-hidden="true" className="size-2.5 shrink-0 animate-pulse rounded-full bg-danger" />
+                  <span>{t(locale, "voiceRecording")}</span>
+                  <span className="tabular-nums text-muted">{clock}</span>
+                </>
+              ) : (
+                <span className="text-muted">{t(locale, "voiceTranscribing")}</span>
+              )}
+            </div>
+          )}
           <textarea
+            hidden={voiceBusy}
             ref={inputRef}
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => {
+              setInput(e.target.value);
+              voice.clearError();
+            }}
             onKeyDown={(e) => {
               // Do not send while a Burmese keyboard is still composing a character.
               if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
@@ -346,7 +377,28 @@ export function ChatClient({
             disabled={awaitingApproval}
             className="max-h-40 min-h-11 flex-1 resize-none bg-transparent px-3 py-2.5 text-base placeholder:text-muted focus-visible:outline-none disabled:opacity-50"
           />
-          {busy ? (
+          {voice.state === "recording" ? (
+            <>
+              <button
+                type="button"
+                onClick={voice.cancel}
+                aria-label={t(locale, "micCancel")}
+                title={t(locale, "micCancel")}
+                className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-surface-2 text-muted transition duration-150 hover:text-fg"
+              >
+                <XIcon width={20} height={20} />
+              </button>
+              <button
+                type="button"
+                onClick={voice.stop}
+                aria-label={t(locale, "micStop")}
+                title={t(locale, "micStop")}
+                className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-danger text-white transition duration-150 hover:brightness-110"
+              >
+                <StopIcon width={18} height={18} />
+              </button>
+            </>
+          ) : voice.state === "transcribing" ? null : busy ? (
             <button
               type="button"
               onClick={() => stop()}
@@ -357,14 +409,26 @@ export function ChatClient({
               <StopIcon width={18} height={18} />
             </button>
           ) : (
-            <button
-              disabled={!input.trim() || awaitingApproval}
-              aria-label={t(locale, "send")}
-              title={t(locale, "send")}
-              className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 text-white transition duration-150 hover:brightness-110 disabled:bg-none disabled:bg-surface-2 disabled:text-muted"
-            >
-              <ArrowUpIcon width={20} height={20} />
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={voice.start}
+                disabled={awaitingApproval}
+                aria-label={t(locale, "micStart")}
+                title={t(locale, "micStart")}
+                className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-surface-2 text-brand-text transition duration-150 hover:brightness-95 disabled:text-muted disabled:opacity-50"
+              >
+                <MicIcon width={20} height={20} />
+              </button>
+              <button
+                disabled={!input.trim() || awaitingApproval}
+                aria-label={t(locale, "send")}
+                title={t(locale, "send")}
+                className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-600 to-indigo-600 text-white transition duration-150 hover:brightness-110 disabled:bg-none disabled:bg-surface-2 disabled:text-muted"
+              >
+                <ArrowUpIcon width={20} height={20} />
+              </button>
+            </>
           )}
         </form>
       </div>
