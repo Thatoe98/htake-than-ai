@@ -56,6 +56,19 @@ export const CheckIcon = (p: P) => (
     <path d="M20 6 9 17l-5-5" />
   </Icon>
 );
+export const CopyIcon = (p: P) => (
+  <Icon {...p}>
+    <rect width="13" height="13" x="9" y="9" rx="2" />
+    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+  </Icon>
+);
+export const DownloadIcon = (p: P) => (
+  <Icon {...p}>
+    <path d="M12 3v12" />
+    <path d="m7 10 5 5 5-5" />
+    <path d="M5 21h14" />
+  </Icon>
+);
 export const XIcon = (p: P) => (
   <Icon {...p}>
     <path d="M18 6 6 18" />

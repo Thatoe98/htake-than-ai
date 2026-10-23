@@ -22,4 +22,20 @@ export function computeCostUsd(
   return Math.round(cost * 1e6) / 1e6;
 }
 
+/** Per-image estimate used when the image prices are not configured or the provider reports no usage. */
+export const IMAGE_FLAT_COST_USD = 0.06;
+
+/** Image models bill by token; the prices (USD per 1M tokens) come from the environment like the text prices. */
+export function imageCostUsd(
+  usage: { inputTokens?: number; outputTokens?: number } | undefined,
+  env: Record<string, string | undefined> = process.env,
+): number {
+  const inPerM = Number(env.OPENAI_PRICE_IMAGE_IN_PER_M);
+  const outPerM = Number(env.OPENAI_PRICE_IMAGE_OUT_PER_M);
+  const priced = Boolean(env.OPENAI_PRICE_IMAGE_IN_PER_M && env.OPENAI_PRICE_IMAGE_OUT_PER_M) && inPerM >= 0 && outPerM >= 0;
+  const known = (usage?.inputTokens ?? 0) + (usage?.outputTokens ?? 0) > 0;
+  if (!priced || !known) return IMAGE_FLAT_COST_USD;
+  return computeCostUsd(usage ?? {}, { inPerM, outPerM, isFallback: false });
+}
+
 export const DEFAULT_MONTHLY_CAP_USD = 20;

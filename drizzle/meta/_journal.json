@@ -43,6 +43,13 @@
       "when": 1792037780293,
       "tag": "0005_task_acknowledge",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1792737026722,
+      "tag": "0006_green_scalphunter",
+      "breakpoints": true
     }
   ]
 }

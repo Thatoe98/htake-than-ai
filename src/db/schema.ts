@@ -300,6 +300,14 @@ export const postVersions = pgTable(
   (t) => [uniqueIndex("post_versions_uq").on(t.postId, t.version)],
 );
 
+// Each writer's saved writing and image style for the studio (validated on read, so the JSON may be partial).
+export const contentStyles = pgTable("content_styles", {
+  userId: uuid("user_id").primaryKey().references(() => users.id),
+  writing: jsonb("writing").notNull().default({}),
+  image: jsonb("image").notNull().default({}),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 // ---- Knowledge -------------------------------------------------------------
 
 export const documents = pgTable("documents", {

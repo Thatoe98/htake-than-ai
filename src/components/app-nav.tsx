@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { type ReactNode, useTransition } from "react";
 import { setLocale } from "@/app/chat/actions";
-import { ClipboardCheckIcon, ListTodoIcon, LogOutIcon, LogoMark, MessageIcon, SparklesIcon, UsersIcon } from "@/components/icons";
+import { ClipboardCheckIcon, ListTodoIcon, LogOutIcon, LogoMark, MessageIcon, PencilIcon, SparklesIcon, UsersIcon } from "@/components/icons";
 import { authClient } from "@/lib/auth-client";
 import { type Locale, type MessageKey, t } from "@/lib/i18n";
 import { isActive, type NavEntry, type NavKey } from "@/lib/nav";
@@ -13,6 +13,7 @@ const ICON: Record<NavKey, ReactNode> = {
   briefing: <SparklesIcon width={22} height={22} />,
   team: <ClipboardCheckIcon width={22} height={22} />,
   chat: <MessageIcon width={22} height={22} />,
+  studio: <PencilIcon width={22} height={22} />,
   tasks: <ListTodoIcon width={22} height={22} />,
   accounts: <UsersIcon width={22} height={22} />,
 };
@@ -21,6 +22,7 @@ const LABEL: Record<NavKey, MessageKey> = {
   briefing: "navBriefing",
   team: "team",
   chat: "chat",
+  studio: "navStudio",
   tasks: "navTasks",
   accounts: "accounts",
 };
